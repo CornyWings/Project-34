@@ -1,4 +1,4 @@
-var dog,dogImage, happyDog, database, foodS, foodStock
+var dog,dogImage, happyDog, database, foodS, foodStock, food;
 
 function preload()
 {
@@ -17,6 +17,8 @@ function setup() {
   dog = createSprite(250,300,50,50);
   dog.addImage(dogImage);
 
+  dog.scale= 0.1;
+
   foodStock=database.ref('Food');
   foodStock.on("value", readStock);
 }
@@ -24,11 +26,14 @@ function setup() {
 
 function draw() {  
 
-  background(46,139,87);
+  background(255);
 
   if(keyWentDown(UP_ARROW)){
-    foodS--;
-    writeStock(foodS);
+    food--;
+    if(food){
+      writeStock(food);
+    }
+   
     dog.addImage(happyDog);
   }
 
@@ -36,19 +41,21 @@ function draw() {
 
 
   drawSprites();
-  
+  text("number of food remaining : "+ foodS, 150, 100 );
+  console.log(foodS);
 
 
 }
 
 function readStock(data){
   foodS= data.val();
+  food= foodS;
 
 
 }
 
 function writeStock(seeds){
-  database.ref("Food").update({
+  database.ref("Food").set({
     Food: seeds
   });
 }
